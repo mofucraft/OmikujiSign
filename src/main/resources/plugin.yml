@@ -2,3 +2,4 @@ name: ${project.name}
 version: ${project.version}
 main: com.github.ucchyocean.os.OmikujiSign
 author: ucchy
+api-version: '1.21'

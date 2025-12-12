@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
@@ -79,8 +79,8 @@ public class OmikujiSign extends JavaPlugin implements Listener {
 
         // クリック先が看板でなければ無視する
         Block block = event.getClickedBlock();
-        if ( block == null || (block.getType() != Material.SIGN &&
-                block.getType() != Material.SIGN_POST && block.getType() != Material.WALL_SIGN) ) {
+        if ( block == null || (!Tag.SIGNS.isTagged(block.getType()) &&
+                !Tag.WALL_SIGNS.isTagged(block.getType())) ) {
             return;
         }
 
@@ -108,8 +108,8 @@ public class OmikujiSign extends JavaPlugin implements Listener {
         sign.setMetadata(SLOT_META_NAME, new FixedMetadataValue(this, true));
 
         // スロット開始音を鳴らす
-        sign.getWorld().playSound(sign.getLocation(), Sound.ORB_PICKUP, 1, 1);
-        sign.getWorld().playEffect(sign.getLocation(), Effect.STEP_SOUND, 8);
+        sign.getWorld().playSound(sign.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+        sign.getWorld().spawnParticle(Particle.BLOCK, sign.getLocation(), 10, block.getBlockData());
 
         // 同期タイマータスクを開始
         new BukkitRunnable() {
@@ -140,8 +140,8 @@ public class OmikujiSign extends JavaPlugin implements Listener {
 
                     // カウント0の時に、音を鳴らしてエフェクトを発生させる
                     if ( count == 0 ) {
-                        sign.getWorld().playSound(sign.getLocation(), Sound.LEVEL_UP, 1, 1);
-                        sign.getWorld().playEffect(sign.getLocation(), Effect.POTION_BREAK, 6);
+                        sign.getWorld().playSound(sign.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                        sign.getWorld().spawnParticle(Particle.EFFECT, sign.getLocation(), 20, 0.5, 0.5, 0.5, 0.1);
                     }
 
                     if ( count % 2 == 0 ) {
